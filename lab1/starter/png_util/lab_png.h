@@ -67,10 +67,12 @@ int get_png_width(struct data_IHDR *buf);
 int get_png_data_IHDR(struct data_IHDR *out, FILE *fp, long offset, int whence);
 
 /* declare your own functions prototypes here */
+
+
 int is_png(U8 *buf, size_t n) {
-    U8 PNG_number[8] = {137, 80, 78, 71, 13, 10, 26, 10};
-    for (int i = 0; i<8; ++i) {
-        if(*(buf+i) != PNG_number[i]) {
+    U8 PNG_SIG_DATA[PNG_SIG_SIZE] = {137, 80, 78, 71, 13, 10, 26, 10};
+    for (int i = 0; i<PNG_SIG_SIZE; i++) {
+        if(*(buf+i) != PNG_SIG_DATA[i]) {
             return 0;
         }
     }
@@ -79,32 +81,31 @@ int is_png(U8 *buf, size_t n) {
 
 void reverse(U8 arr[], int n)
 {
-    U8 buff[n];
-    for (int i = 0; i < n; ++i) {
-        buff[n - i - 1] = arr[i];
+    U8 result[n];
+    for (int i = 0; i < n; i++) {
+        result[n - i - 1] = arr[i];
     }
-    for (int i = 0; i < n; ++i) {
-        arr[i] = buff[i];
+    for (int i = 0; i < n; i++) {
+        arr[i] = result[i];
     }
 }
 
 int get_png_data_IHDR(data_IHDR_p out, FILE *fp, long offset, int whence) {
     data_IHDR_p p_out = out;
-    U8 buffer [13];
+    U8 buffer [DATA_IHDR_SIZE];
     fseek(fp, 16, SEEK_SET);
-    fread(buffer, 13, 1, fp);
+    fread(buffer, DATA_IHDR_SIZE, 1, fp);
     reverse(buffer,4);
     U32* pInt = (U32*)buffer;
     p_out->width = *pInt;
     reverse(buffer,8);
-    U32* pInt2 = (U32*)buffer;
-    p_out->height = *pInt2;
+    U32* p_height = (U32*)buffer;
+    p_out->height = *p_height;
     p_out->bit_depth = buffer[8];
     p_out->color_type = buffer[9];
     p_out->compression = buffer[10];
     p_out->filter = buffer[11];
     p_out->interlace = buffer[12];
-
     return 0;
 }
 

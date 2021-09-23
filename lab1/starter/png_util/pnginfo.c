@@ -6,12 +6,11 @@
 #include <stdio.h>  /* for printf().  man 3 printf */
 #include <stdlib.h> /* for exit().    man 3 exit   */
 #include <string.h> /* for strcat().  man strcat   */
-#include "pnginfo.h"
 #include "lab_png.h"
 #include "crc.h"
 
-#define MAX_SIZE 16 * 1024 * 1024
-
+#define BUF_LEN (256 * 16)
+#define BUF_LEN ()
 int main(int argc, char **argv)
 {
   FILE *fp;
@@ -20,6 +19,14 @@ int main(int argc, char **argv)
   struct data_IHDR ihdr = {.width = 0, .height = 0, .bit_depth = 0, .color_type = 0, .compression = 0, .filter = 0, .interlace = 0};
   data_IHDR_p out = &ihdr;
   fp = fopen(argv[1], "r");
+
+  if (fp == NULL)
+  {
+    perror("fopen");
+    // free()
+    return -1;
+  }
+  
   fread(buffer_8, 8, 1, fp);
   if (is_png(buffer_8, 0))
   {
@@ -42,51 +49,53 @@ void checkForIHDR(FILE *fp, U32 buffer_4, char *fileName)
   fseek(fp, 12, SEEK_SET);
   U8 ihdr_buffer[17];
   fread(ihdr_buffer, 17, 1, fp);
-  unsigned long expected = crc(ihdr_buffer, 17);
+  unsigned long actual = crc(ihdr_buffer, 17);
   fseek(fp, 29, SEEK_SET);
   fread(buffer_4, 4, 1, fp);
   U32 *p_int = (U32 *)buffer_4;
   unsigned long computed = htonl(*p_int);
-  if (computed != expected)
+  if (computed != actual)
   {
-    printf("IHDR chunk CRC error: computed %lx, expected %lx\n", computed, expected);
+    printf("IHDR chunk CRC error: computed %lx, actual %lx\n", computed, actual);
   }
+  free(p_int);
 }
 
-checkForIDAT(FILE *fp, U32 buffer_4)
+void checkForIDAT(FILE *fp, U32 buffer_4)
 {
   fseek(fp, 33, SEEK_SET);
   fread(buffer_4, 4, 1, fp);
   U32 *p_int = (U32 *)buffer_4;
-  p_int = (U32 *)buffer_4;
   unsigned long length = htonl(*p_int);
   U8 *idat_buffer = malloc((length + 4) * sizeof(U8));
   fseek(fp, 37, SEEK_SET);
   fread(idat_buffer, length + 4, 1, fp);
-  unsigned long expected = crc(idat_buffer, length + 4);
+  unsigned long actual = crc(idat_buffer, length + 4);
   fseek(fp, -16, SEEK_END);
   fread(buffer_4, 4, 1, fp);
   p_int = (U32 *)buffer_4;
   unsigned long computed = htonl(*p_int);
-  if (computed != expected)
+  if (computed != actual)
   {
-    printf("IDAT chunk CRC error: computed %lx, expected %lx\n", computed, expected);
+    printf("IDAT chunk CRC error: computed %lx, actual %lx\n", computed, actual);
   }
+  free(p_int);
 }
 
-checkForCRC(FILE *fp, U32 buffer_4)
+void checkForCRC(FILE *fp, U32 buffer_4)
 {
   fseek(fp, -8, SEEK_END);
   U8 iend_buffer[4];
   U32 *p_int = (U32 *)buffer_4;
   fread(iend_buffer, 4, 1, fp);
-  unsigned long expected = crc(iend_buffer, 4);
+  unsigned long actual = crc(iend_buffer, 4);
   fseek(fp, -4, SEEK_END);
   fread(buffer_4, 4, 1, fp);
   p_int = (U32 *)buffer_4;
   unsigned long computed = htonl(*p_int);
-  if (computed != expected)
+  if (computed != actual)
   {
-    printf("IEND chunk CRC error: computed %lx, expected %lx\n", computed, expected);
+    printf("IEND chunk CRC error: computed %lx, actual %lx\n", computed, actual);
   }
+  free(p_int);
 }
