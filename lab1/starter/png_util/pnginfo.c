@@ -24,8 +24,8 @@ int main(int argc, char **argv)
   if (is_png(buffer_8, 0))
   {
     checkForIHDR(fp, buffer_4, argv[1]);
-    checkForIDAT(fp, buffer_4, argv[1]);
-    checkForCRC(fp, buffer_4, argv[1]);
+    checkForIDAT(fp, buffer_4);
+    checkForCRC(fp, buffer_4);
   }else{
     printf("%s: Not a PNG file\n", argv[1]);
   }
