@@ -7,16 +7,16 @@ LD = gcc       # linker
 LDFLAGS = -g   # debugging symbols in build
 LDLIBS = -lz   # link with libz
 
-# For students 
+# For students
 LIB_UTIL = zutil.o crc.o
-SRCS   = main.c crc.c zutil.c
-OBJS   = main.o $(LIB_UTIL) 
+SRCS   = pnginfo.c crc.c zutil.c
+OBJS   = pnginfo.o $(LIB_UTIL)
 
-TARGETS= main.out 
+TARGETS= pnginfo.out
 
 all: ${TARGETS}
 
-main.out: $(OBJS) 
+pnginfo: $(OBJS) 
 	$(LD) -o $@ $^ $(LDLIBS) $(LDFLAGS) 
 
 %.o: %.c 

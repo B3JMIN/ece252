@@ -67,3 +67,50 @@ int get_png_width(struct data_IHDR *buf);
 int get_png_data_IHDR(struct data_IHDR *out, FILE *fp, long offset, int whence);
 
 /* declare your own functions prototypes here */
+int is_png(U8 *buf, size_t n) {
+    U8 PNG_number[8] = {137, 80, 78, 71, 13, 10, 26, 10};
+    for (int i = 0; i<8; ++i) {
+        if(*(buf+i) != PNG_number[i]) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+void reverse(U8 arr[], int n)
+{
+    U8 buff[n];
+    for (int i = 0; i < n; ++i) {
+        buff[n - i - 1] = arr[i];
+    }
+    for (int i = 0; i < n; ++i) {
+        arr[i] = buff[i];
+    }
+}
+
+int get_png_data_IHDR(data_IHDR_p out, FILE *fp, long offset, int whence) {
+    data_IHDR_p p_out = out;
+    U8 buffer [13];
+    fseek(fp, 16, SEEK_SET);
+    fread(buffer, 13, 1, fp);
+    reverse(buffer,4);
+    U32* pInt = (U32*)buffer;
+    p_out->width = *pInt;
+    reverse(buffer,8);
+    U32* pInt2 = (U32*)buffer;
+    p_out->height = *pInt2;
+    p_out->bit_depth = buffer[8];
+    p_out->color_type = buffer[9];
+    p_out->compression = buffer[10];
+    p_out->filter = buffer[11];
+    p_out->interlace = buffer[12];
+
+    return 0;
+}
+
+int get_png_height(struct data_IHDR *buf) {
+    return buf->height;
+}
+int get_png_width(struct data_IHDR *buf) {
+    return buf->width;
+}
