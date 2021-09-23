@@ -9,8 +9,6 @@
 #include "lab_png.h"
 #include "crc.h"
 
-#define BUF_LEN (256 * 16)
-#define BUF_LEN ()
 int main(int argc, char **argv)
 {
   FILE *fp;
@@ -27,7 +25,13 @@ int main(int argc, char **argv)
     return -1;
   }
   
-  fread(buffer_8, 8, 1, fp);
+  size_t fread_status = fread(buffer_8, 8, 1, fp);
+
+  if (fread_status == 0)
+  {
+    printf("Nothing read from this PNG file!\n");
+  }
+  
   if (is_png(buffer_8, 0))
   {
     checkForIHDR(fp, buffer_4, argv[1]);
@@ -80,6 +84,7 @@ void checkForIDAT(FILE *fp, U32 buffer_4)
     printf("IDAT chunk CRC error: computed %lx, actual %lx\n", computed, actual);
   }
   free(p_int);
+  free(idat_buffer);
 }
 
 void checkForCRC(FILE *fp, U32 buffer_4)
