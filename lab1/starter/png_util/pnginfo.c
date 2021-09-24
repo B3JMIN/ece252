@@ -1,13 +1,3 @@
-// #include <sys/types.h>
-// #include <dirent.h>
-// #include <sys/stat.h>
-// #include <unistd.h>
-// #include <arpa/inet.h>
-// #include <stdio.h>  /* for printf().  man 3 printf */
-// #include <stdlib.h> /* for exit().    man 3 exit   */
-// #include <string.h> /* for strcat().  man strcat   */
-// #include "lab_png.h"
-// #include "crc.h"
 #include <stdio.h>   /* for printf(), perror()...   */
 #include <stdlib.h>  /* for malloc()                */
 #include <errno.h>   /* for errno                   */
