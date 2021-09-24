@@ -22,28 +22,6 @@
 U8 gp_buf_def[ESTIMATED_PNG_MAX]; /* output buffer for mem_def() */
 U8 gp_buf_inf[BUF_LEN2];          /* output buffer for mem_inf() */
 
-/******************************************************************************
- * FUNCTION PROTOTYPES 
- *****************************************************************************/
-
-void init_data(U8 *buf, int len);
-
-/******************************************************************************
- * FUNCTIONS 
- *****************************************************************************/
-
-/**
- * @brief initialize memory with 256 chars 0 - 255 cyclically 
- */
-void init_data(U8 *buf, int len)
-{
-    int i;
-    for (i = 0; i < len; i++)
-    {
-        buf[i] = i % 256;
-    }
-}
-
 int main(int argc, char **argv)
 {
     U32 crc_val = 0; /* CRC value                                     */

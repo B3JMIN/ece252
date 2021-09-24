@@ -70,3 +70,26 @@ int get_png_data_IHDR(struct data_IHDR *out, FILE *fp, long offset, int whence);
 int check_png_signature(U8 *buf, size_t n);
 int get_png_height_using_buf(U8 *buf);
 int get_png_width_using_buf(U8 *buf);
+void init_data(U8 *buf, int len);
+
+int check_png_signature(U8 *buf, size_t n)
+{
+    if (!((unsigned char)buf[0] == 0x89 || (unsigned char)buf[1] == 'P' || (unsigned char)buf[2] == 'N' || (unsigned char)buf[3] == 'G' ||
+          (unsigned char)buf[4] == 0x0D || (unsigned char)buf[5] == 0x0A || (unsigned char)buf[6] == 0x1A || (unsigned char)buf[7] == 0x0A))
+    {
+        return -1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+void init_data(U8 *buf, int len)
+{
+    int i;
+    for (i = 0; i < len; i++)
+    {
+        buf[i] = i % 256;
+    }
+}

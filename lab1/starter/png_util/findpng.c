@@ -27,17 +27,12 @@ U8 gp_buf_inf[BUF_LEN2]; /* output buffer for mem_inf() */
 int png_num_checker = 0;
 
 /******************************************************************************
- * FUNCTION PROTOTYPES 
- *****************************************************************************/
-
-/******************************************************************************
  * FUNCTIONS 
  *****************************************************************************/
 
 void searchPngFiles(char *path_base);
 int checkifpng(char *file_path);
 int check_png_signature(U8 *buf, size_t n);
-void init_data(U8 *buf, int len);
 
 int main(int argc, char **argv)
 {
@@ -93,7 +88,6 @@ void searchPngFiles(char *path_base)
             else
             {
                 sprintf(path_name_buf, "%s/%s", path_base, dp->d_name);
-                FILE *f = fopen(file_path, "r");
                 temp = 0;
             }
 
@@ -113,11 +107,7 @@ void searchPngFiles(char *path_base)
 
 int checkifpng(char *file_path)
 {
-
-    U8 *p_buffer = NULL; 
-    int ret = 0;         
-    U64 len_def = 0;     
-    U64 len_inf = 0;     
+    U8 *p_buffer = NULL;          
 
     p_buffer = malloc(BUF_LEN);
     if (p_buffer == NULL)
@@ -160,26 +150,4 @@ int checkifpng(char *file_path)
     free(p_buffer); /* free dynamically allocated memory */
 
     return 0;
-}
-
-int check_png_signature(U8 *buf, size_t n)
-{
-    if (!((unsigned char)buf[0] == 0x89 || (unsigned char)buf[1] == 'P' || (unsigned char)buf[2] == 'N' || (unsigned char)buf[3] == 'G' ||
-          (unsigned char)buf[4] == 0x0D || (unsigned char)buf[5] == 0x0A || (unsigned char)buf[6] == 0x1A || (unsigned char)buf[7] == 0x0A))
-    {
-        return -1;
-    }
-    else
-    {
-        return 0;
-    }
-}
-
-void init_data(U8 *buf, int len)
-{
-    int i;
-    for (i = 0; i < len; i++)
-    {
-        buf[i] = i % 256;
-    }
 }
