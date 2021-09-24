@@ -21,7 +21,7 @@
 #define CHUNK_TYPE_SIZE 4 /* chunk type field size in bytes */
 #define CHUNK_CRC_SIZE  4 /* chunk CRC field size in bytes */
 #define DATA_IHDR_SIZE 13 /* IHDR chunk data field size */
-
+PNG_SIG_DATA[PNG_SIG_SIZE] = {137, 80, 78, 71, 13, 10, 26, 10};
 /******************************************************************************
  * STRUCTURES and TYPEDEFS 
  *****************************************************************************/
@@ -68,9 +68,8 @@ int get_png_data_IHDR(struct data_IHDR *out, FILE *fp, long offset, int whence);
 
 /* declare your own functions prototypes here */
 
-
+U8 PNG_SIG_DATA[PNG_SIG_SIZE] = {137, 80, 78, 71, 13, 10, 26, 10};
 int is_png(U8 *buf, size_t n) {
-    U8 PNG_SIG_DATA[PNG_SIG_SIZE] = {137, 80, 78, 71, 13, 10, 26, 10};
     for (int i = 0; i<PNG_SIG_SIZE; i++) {
         if(*(buf+i) != PNG_SIG_DATA[i]) {
             return 0;

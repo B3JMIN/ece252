@@ -20,7 +20,7 @@ int main(int argc, char **argv)
 
   if (fp == NULL)
   {
-    perror("fopen");
+    perror("fopen has the error: ");
     // free()
     return -1;
   }
