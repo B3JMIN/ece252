@@ -21,7 +21,7 @@
 #define CHUNK_TYPE_SIZE 4 /* chunk type field size in bytes */
 #define CHUNK_CRC_SIZE  4 /* chunk CRC field size in bytes */
 #define DATA_IHDR_SIZE 13 /* IHDR chunk data field size */
-PNG_SIG_DATA[PNG_SIG_SIZE] = {137, 80, 78, 71, 13, 10, 26, 10};
+
 /******************************************************************************
  * STRUCTURES and TYPEDEFS 
  *****************************************************************************/

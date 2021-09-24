@@ -1,16 +1,6 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <stdio.h>   /* for printf(), perror()...   */
-#include <stdlib.h>  /* for malloc()                */
-#include <errno.h>   /* for errno                   */
-#include "crc.h"     /* for crc()                   */
-#include "crc.c"     /* for crc()                   */
-#include "zutil.h"   /* for mem_def() and mem_inf() */
-#include "lab_png.h" /* simple PNG data structures  */
-#include <sys/types.h>
-#include <dirent.h>
-#include "pnginfo.h"
-
 #include <unistd.h>
 #include <sys/stat.h>
 #include <stdio.h>   /* for printf(), perror()...   */
