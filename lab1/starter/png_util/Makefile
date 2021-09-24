@@ -9,16 +9,14 @@ LDLIBS = -lz   # link with libz
 
 # For students
 LIB_UTIL = zutil.o crc.o
-SRCS   = pnginfo.c finpng.c catpng.c crc.c zutil.c
+SRCS   = catpng.c findpng.c pnginfo.c crc.c zutil.c
+OBJS   = catpng.o $(LIB_UTIL) 
 
-TARGETS= pnginfo findpng catpng
+TARGETS= catpng findpng pnginfo
 
 all: ${TARGETS}
 
-pnginfo: pnginfo.o $(LIB_UTIL)
-	$(CC) $(CFLAGS) -c $< 
-
-catpng: catpng.o $(LIB_UTIL)
+catpng: $(OBJS) 
 	$(LD) -o $@ $^ $(LDLIBS) $(LDFLAGS)
 
 %.o: %.c 
