@@ -56,8 +56,6 @@ int main(int argc, char **argv)
 
     unsigned char *p_buffer1 = (unsigned char *)malloc(ESTIMATED_PNG_MAX);
     unsigned char *p_buffer2 = (unsigned char *)malloc(ESTIMATED_PNG_MAX);
-    unsigned char *p_buffer_data_ty1 = (unsigned char *)malloc(BUF_LEN);
-    unsigned char *p_buffer_data_ty2 = (unsigned char *)malloc(BUF_LEN);
     unsigned char *concatenated_buf;
     unsigned char *crc_calc;
     unsigned char *concat_final = (unsigned char *)malloc(ESTIMATED_PNG_MAX);
@@ -127,19 +125,6 @@ int main(int argc, char **argv)
             p_buffer2_data[i] = p_buffer2[i + 41];
         }
 
-        /*
-        
-        for(int i=0; i<idat_leng1; i++) {
-            printf("%x ", p_buffer1_data[i]);
-        }
-
-        for(int i=0; i<idat_leng2; i++) {
-            printf("%x ", p_buffer2_data[i]);
-        }
-        
-        
-        */
-
         /*inflation routine */
         ret = mem_inf(data_p_buffer1, &len_inf1, p_buffer1_data, idat_leng1);
         if (ret == 0)
@@ -178,15 +163,6 @@ int main(int argc, char **argv)
             }
         }
 
-        /*
-        
-        for(int i=0; i<len_inf1 + len_inf2; i++) {
-            printf("%x ", concatenated_buf[i]);
-        }
-        
-        
-        */
-
         /*deflation routine*/
         ret = mem_def(gp_buf_def, &len_def, concatenated_buf, len_inf1 + len_inf2, Z_DEFAULT_COMPRESSION);
         if (ret == 0)
@@ -209,15 +185,6 @@ int main(int argc, char **argv)
         {
             concat_final[41 + i] = gp_buf_def[i];
         }
-
-        /*
-        
-        for(int i=0; i<len_def; i++) {
-            printf("%x ", concat_final[41+i]);
-        }
-        
-        
-        */
 
         U8 temp_buf_p[4];
         memset(temp_buf_p, 0, 4);
@@ -344,8 +311,6 @@ int main(int argc, char **argv)
     }
 
     /* free memory and resources */
-    free(p_buffer_data_ty1);
-    free(p_buffer_data_ty2);
     free(p_buffer1);
     free(p_buffer2);
     free(concatenated_buf);
