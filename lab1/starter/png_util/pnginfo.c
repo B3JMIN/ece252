@@ -115,10 +115,6 @@ int main(int argc, char **argv)
         /*fprintf(stderr, "mem_def failed. ret = %d.\n", ret);*/
     }
 
-    /* Step 3: Demo how to use the crc utility */
-    /*crc_val = crc(gp_buf_def, len_def); // down cast the return val to U32
-    printf("crc_val = %u\n", crc_val);*/
-
     /* .............................................. */
     /* open the file in read mode */
     FILE *f = fopen(argv[1], "r");

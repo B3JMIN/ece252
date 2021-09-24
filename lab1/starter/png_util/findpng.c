@@ -151,104 +151,6 @@ int checkifpng(char *file_path)
         return -1;
     }
 
-    struct simple_PNG *simple_PNG_p = malloc(3 * (2 * sizeof(U32)) + (2 * sizeof(U8)));
-    struct chunk *chunk_p = malloc((2 * sizeof(U32)) + (2 * sizeof(U8)));
-
-    U32 ihdr_actual;
-    U32 idat_actual;
-    U32 iend_actual;
-
-    for (int i = 0; i < 4; i++)
-    {
-        chunk_p->type[i] = p_buffer[i + 12];
-    }
-
-    chunk_p->length = ((unsigned char)p_buffer[8] << 24) + ((unsigned char)p_buffer[9] << 16) + ((unsigned char)p_buffer[10] << 8) + ((unsigned char)p_buffer[11] << 0);
-
-    chunk_p->crc = ((unsigned char)p_buffer[29] << 24) + ((unsigned char)p_buffer[30] << 16) + ((unsigned char)p_buffer[31] << 8) + ((unsigned char)p_buffer[32] << 0);
-    ihdr_actual = chunk_p->crc;
-
-    U8 *ihdr_data = malloc(chunk_p->length + 4);
-    for (int i = 0; i < 17; i++)
-    {
-        ihdr_data[i] = p_buffer[12 + i];
-    }
-
-    U8 *ihdr_data_exclusive = malloc(chunk_p->length);
-    for (int i = 0; i < chunk_p->length; i++)
-    {
-        ihdr_data_exclusive[i] = ihdr_data[i + 4];
-    }
-
-    chunk_p->p_data = ihdr_data_exclusive;
-
-    simple_PNG_p->p_IHDR = chunk_p;
-
-    U32 crc_computed_ihdr = crc(ihdr_data, chunk_p->length + 4);
-
-    int crc_deviation_ihdr = crc_computed_ihdr - chunk_p->crc;
-
-    fseek(f, 33, SEEK_SET);
-    size = fread(p_buffer, 1, 33, f);
-
-    for (int i = 0; i < 4; i++)
-    {
-        chunk_p->type[i] = p_buffer[i + 4];
-    }
-
-    chunk_p->length = ((unsigned char)p_buffer[0] << 24) + ((unsigned char)p_buffer[1] << 16) + ((unsigned char)p_buffer[2] << 8) + ((unsigned char)p_buffer[3] << 0);
-
-    U8 *idat_data_buf = malloc(chunk_p->length);
-    fseek(f, 41, SEEK_SET);
-    size = fread(idat_data_buf, 1, chunk_p->length, f);
-    chunk_p->p_data = idat_data_buf;
-
-    U8 *idat_data_type = malloc(chunk_p->length + 4);
-
-    for (int i = 0; i < chunk_p->length + 4; i++)
-    {
-        if (i == 0 || i == 1 || i == 2 || i == 3)
-        {
-            idat_data_type[i] = chunk_p->type[i];
-        }
-        else
-        {
-            idat_data_type[i] = idat_data_buf[i - 4];
-        }
-    }
-
-    fseek(f, 41 + chunk_p->length, SEEK_SET);
-    size = fread(p_buffer, 1, 16, f);
-
-    chunk_p->crc = ((unsigned char)p_buffer[0] << 24) + ((unsigned char)p_buffer[1] << 16) + ((unsigned char)p_buffer[2] << 8) + ((unsigned char)p_buffer[3] << 0);
-    idat_actual = chunk_p->crc;
-
-    simple_PNG_p->p_IDAT = chunk_p;
-
-    U32 crc_computed_idat = crc(idat_data_type, chunk_p->length + 4);
-    int crc_deviation_idat = crc_computed_idat - chunk_p->crc;
-    free(idat_data_type);
-
-    fseek(f, 41 + chunk_p->length + 4, SEEK_SET);
-    size = fread(p_buffer, 1, 12, f);
-
-    for (int i = 0; i < 4; i++)
-    {
-        chunk_p->type[i] = p_buffer[i + 4];
-    }
-
-    chunk_p->length = ((unsigned char)p_buffer[0] << 24) + ((unsigned char)p_buffer[1] << 16) + ((unsigned char)p_buffer[2] << 8) + ((unsigned char)p_buffer[3] << 0);
-
-    chunk_p->crc = ((unsigned char)p_buffer[8] << 24) + ((unsigned char)p_buffer[9] << 16) + ((unsigned char)p_buffer[10] << 8) + ((unsigned char)p_buffer[11] << 0);
-    iend_actual = chunk_p->crc;
-
-    chunk_p->p_data = NULL;
-
-    simple_PNG_p->p_IEND = chunk_p;
-
-    U32 crc_computed_iend = crc(chunk_p->type, 4);
-    int crc_deviation_iend = crc_computed_iend - chunk_p->crc;
-
     if (status == 0)
     {
         printf("%s\n", file_path);
@@ -256,12 +158,6 @@ int checkifpng(char *file_path)
     }
 
     free(p_buffer); /* free dynamically allocated memory */
-
-    free(simple_PNG_p);
-    free(chunk_p);
-    free(ihdr_data_exclusive);
-    free(ihdr_data);
-    free(idat_data_buf);
 
     return 0;
 }
